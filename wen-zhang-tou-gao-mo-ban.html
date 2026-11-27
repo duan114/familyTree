@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>文章投稿模板</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+    <style>
+      :root {
+        --bg: #f4f2ec;
+        --surface: #fffdf8;
+        --surface-2: #efeadf;
+        --ink: #23211c;
+        --ink-soft: #5c574c;
+        --line: #ddd5c3;
+        --green: #1e4d3b;
+        --green-soft: #e3ede6;
+        --red: #a93226;
+        --red-soft: #f7e8e4;
+        --gold: #9a7b2d;
+        --shadow: 0 1px 3px rgba(35, 33, 28, .08), 0 8px 24px rgba(35, 33, 28, .06);
+        --radius: 10px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #16181a;
+          --surface: #1f2224;
+          --surface-2: #26292c;
+          --ink: #ece7db;
+          --ink-soft: #a89f8d;
+          --line: #3a3d3a;
+          --green: #7fbfa3;
+          --green-soft: #22352c;
+          --red: #e08a7d;
+          --red-soft: #3d2622;
+          --gold: #c9a959;
+          --shadow: 0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+        line-height: 1.6;
+      }
+      .serif { font-family: "Songti SC", "STSong", "Noto Serif SC", "SimSun", serif; }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 20px 16px 56px; }
+
+      /* ---------- 头部 ---------- */
+      .masthead { padding: 10px 2px 18px; border-bottom: 3px double var(--line); margin-bottom: 22px; }
+      .masthead h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: .06em; font-weight: 700; }
+      .masthead h1 .seal {
+        display: inline-block; background: var(--red); color: #fff;
+        font-size: 15px; padding: 2px 7px; border-radius: 4px;
+        vertical-align: 6px; margin-left: 10px; letter-spacing: .2em; font-weight: 600;
+      }
+      @media (prefers-color-scheme: dark) { .masthead h1 .seal { color: #1c1210; } }
+      .masthead p { margin: 0; color: var(--ink-soft); font-size: 15px; max-width: 46em; }
+      .masthead .tally { margin-top: 8px; font-size: 13.5px; color: var(--ink-soft); }
+      .masthead .tally b { color: var(--green); font-size: 16px; }
+
+      /* ---------- 投稿表单 ---------- */
+      .panel {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow);
+        padding: 20px; margin-bottom: 26px;
+      }
+      .panel h2 { margin: 0 0 4px; font-size: 20px; letter-spacing: .04em; }
+      .panel .hint { margin: 0 0 16px; color: var(--ink-soft); font-size: 13.5px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      .field.full { grid-column: 1 / -1; }
+      .field label, .field .flabel { font-size: 14px; font-weight: 600; }
+      .field label .req { color: var(--red); }
+      input[type="text"], input[type="email"], input[type="url"], textarea, select {
+        font: inherit; color: var(--ink); background: var(--bg);
+        border: 1px solid var(--line); border-radius: 8px;
+        padding: 9px 12px; min-height: 40px; width: 100%;
+      }
+      textarea { min-height: 190px; resize: vertical; line-height: 1.75; }
+      input[type="text"]:focus, input[type="email"]:focus, input[type="url"]:focus, textarea:focus, select:focus {
+        outline: 2px solid var(--green); outline-offset: 0; border-color: transparent;
+      }
+      .field .fhelp { font-size: 12.5px; color: var(--ink-soft); font-weight: 400; }
+      .seg { display: flex; gap: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+      .seg label { flex: 1; position: relative; cursor: pointer; display: block; }
+      .seg input {
+        position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        width: 17px; height: 17px; margin: 0; z-index: 1;
+        accent-color: var(--green); cursor: pointer;
+      }
+      .seg span {
+        display: flex; align-items: center; justify-content: center;
+        min-height: 40px; padding: 8px 6px 8px 26px; font-size: 15px; text-align: center;
+        background: var(--bg); color: var(--ink-soft);
+      }
+      .seg label:has(input:checked) span {
+        background: var(--green-soft); color: var(--green); font-weight: 700;
+        box-shadow: inset 0 0 0 2px var(--green);
+      }
+      .seg input:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+      .upload-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+      .file-btn {
+        display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+        border: 1px dashed var(--gold); color: var(--gold); font-weight: 600;
+        border-radius: 8px; padding: 8px 14px; min-height: 40px; font-size: 14.5px;
+        background: transparent;
+      }
+      .file-btn input { display: none; }
+      .file-name { font-size: 13.5px; color: var(--ink-soft); word-break: break-all; }
+      .form-foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+      .char-count { font-size: 13px; color: var(--ink-soft); margin-right: auto; }
+      button {
+        font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid transparent;
+        min-height: 40px; padding: 8px 18px; font-size: 15px;
+      }
+      .btn-primary { background: var(--red); color: #fff; font-weight: 700; letter-spacing: .05em; }
+      @media (prefers-color-scheme: dark) { .btn-primary { color: #1c1210; } }
+      .btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+      .btn-ghost:hover { border-color: var(--green); color: var(--green); }
+      .form-error { display: none; color: var(--red); font-size: 14px; margin-top: 10px; }
+      .form-error.show { display: block; }
+
+      /* ---------- 工具条 ---------- */
+      .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+      .toolbar .search { flex: 1 1 220px; }
+      .toolbar input[type="text"] { background: var(--surface); }
+
+      /* ---------- 双栏目 ---------- */
+      .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+      .column {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+      }
+      .col-head {
+        display: flex; align-items: baseline; gap: 10px;
+        padding: 14px 18px 12px; border-bottom: 1px solid var(--line);
+      }
+      .col-head h2 { margin: 0; font-size: 21px; letter-spacing: .08em; }
+      .col-head .en { font-size: 11px; letter-spacing: .18em; color: var(--ink-soft); text-transform: uppercase; }
+      .col-head .count {
+        margin-left: auto; font-size: 13px; color: var(--ink-soft);
+        background: var(--surface-2); border-radius: 999px; padding: 1px 10px;
+      }
+      .col-research .col-head { border-top: 4px solid var(--green); }
+      .col-poetry .col-head { border-top: 4px solid var(--red); }
+      .col-body { padding: 8px 18px 16px; }
+      .empty { color: var(--ink-soft); font-size: 14.5px; text-align: center; padding: 30px 10px; }
+      .empty .big { font-size: 26px; display: block; margin-bottom: 6px; color: var(--line); }
+
+      .card { padding: 16px 0 14px; border-bottom: 1px solid var(--line); }
+      .card:last-child { border-bottom: none; }
+      .card h3 { margin: 0 0 4px; font-size: 18.5px; line-height: 1.45; }
+      .card h3 a { color: var(--ink); text-decoration: none; cursor: pointer; }
+      .card h3 a:hover { color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
+      .meta { font-size: 13px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 6px; }
+      .tag-sample {
+        font-size: 11.5px; border: 1px solid var(--gold); color: var(--gold);
+        border-radius: 4px; padding: 0 5px; line-height: 1.7;
+      }
+      .excerpt {
+        margin: 0 0 10px; font-size: 14.5px; color: var(--ink-soft); line-height: 1.7;
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+      }
+      .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+      .card-actions button { min-height: 36px; padding: 5px 13px; font-size: 13.5px; }
+      .btn-read { background: var(--green); color: #fff; font-weight: 600; }
+      @media (prefers-color-scheme: dark) { .btn-read { color: #10231b; } }
+      .btn-mini { background: transparent; border-color: var(--line); color: var(--ink-soft); }
+      .btn-mini:hover { color: var(--ink); border-color: var(--ink-soft); }
+      .btn-mini.danger:hover { color: var(--red); border-color: var(--red); }
+      .btn-attach {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: transparent; border: 1px solid var(--gold); color: var(--gold);
+        font-weight: 600; text-decoration: none; border-radius: 8px;
+        min-height: 36px; padding: 5px 13px; font-size: 13.5px;
+      }
+      .btn-attach:hover { background: var(--surface-2); text-decoration: underline; text-underline-offset: 3px; }
+
+      /* ---------- 阅读浮层 ---------- */
+      .reader-back {
+        display: none; position: fixed; inset: 0; z-index: 50;
+        background: rgba(20, 18, 14, .55); padding: 18px 12px;
+        overflow-y: auto;
+      }
+      .reader-back.open { display: block; }
+      .reader {
+        max-width: 760px; margin: 12px auto 40px; background: var(--surface);
+        border-radius: 12px; box-shadow: var(--shadow); padding: 30px 30px 36px;
+      }
+      .reader .r-cat { font-size: 13px; letter-spacing: .3em; color: var(--red); font-weight: 700; margin-bottom: 8px; }
+      .reader.research .r-cat { color: var(--green); }
+      .reader h2 { margin: 0 0 8px; font-size: 27px; line-height: 1.4; }
+      .reader .r-meta { color: var(--ink-soft); font-size: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+      .reader .r-body { font-size: 17px; line-height: 2; }
+      .reader .r-body p { margin: 0 0 1em; }
+      .reader .r-attach {
+        margin-top: 22px; padding: 14px 16px; border: 1px solid var(--line);
+        border-radius: 8px; background: var(--surface-2);
+        display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      }
+      .reader .r-attach .a-label { font-size: 14px; font-weight: 700; }
+      .reader .r-attach .a-url { font-size: 13px; color: var(--ink-soft); word-break: break-all; flex: 1 1 200px; }
+      .reader .r-attach .btn-attach { min-height: 40px; padding: 8px 16px; font-size: 14.5px; background: var(--surface); }
+      .reader .r-attach[hidden] { display: none; }
+      .reader .r-foot { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+      /* ---------- 视图切换 ---------- */
+      .view-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+      .view-tabs button {
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+        font-weight: 600; padding: 8px 18px; border-radius: 999px;
+      }
+      .view-tabs button.active { background: var(--green); border-color: var(--green); color: #fff; }
+      @media (prefers-color-scheme: dark) { .view-tabs button.active { color: #10231b; } }
+      .view-tabs .badge {
+        display: inline-block; background: var(--red); color: #fff; border-radius: 999px;
+        font-size: 12px; padding: 0 7px; margin-left: 6px; line-height: 1.7; vertical-align: 1px;
+      }
+      @media (prefers-color-scheme: dark) { .view-tabs .badge { color: #1c1210; } }
+
+      /* ---------- 管理员列表 ---------- */
+      .admin-item { padding: 15px 0 13px; border-bottom: 1px solid var(--line); }
+      .admin-item:last-child { border-bottom: none; }
+      .admin-item h3 { margin: 0 0 4px; font-size: 17.5px; line-height: 1.45; }
+      .admin-item h3 a { color: var(--ink); text-decoration: none; cursor: pointer; }
+      .admin-item h3 a:hover { color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
+      .tag-status {
+        font-size: 11.5px; border: 1px solid var(--gold); color: var(--gold);
+        border-radius: 4px; padding: 0 6px; line-height: 1.8; white-space: nowrap;
+      }
+      .tag-status.rej { border-color: var(--red); color: var(--red); }
+      .tag-status.pub { border-color: var(--green); color: var(--green); }
+      .reject-note { font-size: 13.5px; color: var(--red); margin: 2px 0 8px; }
+      .reason-row { display: flex; gap: 8px; margin-top: 10px; }
+      .reason-row input { flex: 1 1 auto; min-height: 36px; font-size: 14px; }
+      .meta a.mail-link { color: var(--green); text-decoration: none; word-break: break-all; }
+      .meta a.mail-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+      .no-mail { font-size: 12.5px; color: var(--ink-soft); }
+      .admin-empty { color: var(--ink-soft); font-size: 14.5px; text-align: center; padding: 22px 10px 14px; }
+
+      /* ---------- 提示 ---------- */
+      .toast {
+        position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+        background: var(--ink); color: var(--bg); padding: 10px 20px; border-radius: 999px;
+        font-size: 14.5px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s;
+        z-index: 80; max-width: calc(100vw - 32px); text-align: center;
+      }
+      .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+      @media (max-width: 760px) {
+        .grid { grid-template-columns: 1fr; }
+        .columns { grid-template-columns: 1fr; }
+        .masthead h1 { font-size: 25px; }
+        .panel { padding: 16px; }
+        .reader { padding: 22px 18px 28px; }
+        .reader h2 { font-size: 23px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header class="masthead">
+        <h1 class="serif">文章投稿<span class="seal">投稿</span></h1>
+        <p>族史考证、源流研究投到「研究文章」；诗词、散文、家族故事投到「诗文故事」。投稿后先由管理员审核，批准了才显示在栏目里；投稿时留了邮箱，管理员可在审稿页把处理意见通过邮件发给投稿者。管理员也能自己直接发文。</p>
+        <div class="tally">已刊载 <b id="tallyTotal">0</b> 篇 · 研究文章 <b id="tallyResearch">0</b> 篇 · 诗文故事 <b id="tallyPoetry">0</b> 篇 · 待审核 <b id="tallyPending">0</b> 篇</div>
+      </header>
+
+      <nav class="view-tabs" aria-label="视图切换">
+        <button type="button" id="tabPublic" class="active">投稿与栏目</button>
+        <button type="button" id="tabAdmin">管理员审稿<span class="badge" id="pendingBadge" hidden>0</span></button>
+      </nav>
+
+      <div id="publicView">
+
+      <!-- 投稿表单 -->
+      <section class="panel" aria-labelledby="formTitle">
+        <h2 class="serif" id="formTitle">我要投稿</h2>
+        <p class="hint">正文可以直接打字或粘贴，也可以上传文件带入（支持 .txt、.md、.docx）；文件只用来填入正文框，改好后再点「提交审核」。稿件先进入待审核区，管理员批准后才显示在下方栏目里。留下邮箱，管理员处理后可把意见发到你的邮箱；不填也能投稿，只是收不到通知。另有附件文件（如 PDF）想随文章一起给读者看的，把文件先放到网站的 articles 文件夹里，再把地址填到「附件链接」里，文章卡片和全文里会出现「查看附件」打开它；只填附件链接、不写正文也可以投稿。</p>
+        <form id="postForm" novalidate>
+          <div class="grid">
+            <div class="field">
+              <span class="flabel" id="catLabel">投到哪个栏目 <span class="req">*</span></span>
+              <div class="seg" role="radiogroup" aria-labelledby="catLabel">
+                <label><input type="radio" name="category" value="research" checked /><span>研究文章</span></label>
+                <label><input type="radio" name="category" value="poetry" /><span>诗文故事</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="authorInput">作者 / 署名</label>
+              <input type="text" id="authorInput" placeholder="如：张文远" maxlength="30" />
+            </div>
+            <div class="field full">
+              <label for="emailInput">联系邮箱 <span class="fhelp">（可选，管理员把处理意见发到这里）</span></label>
+              <input type="email" id="emailInput" placeholder="如：name@example.com" maxlength="80" autocomplete="email" inputmode="email" />
+            </div>
+            <div class="field full">
+              <label for="titleInput">文章标题 <span class="req">*</span></label>
+              <input type="text" id="titleInput" placeholder="如：本支张氏迁徙源流考" maxlength="80" />
+            </div>
+            <div class="field full">
+              <label for="attachInput">附件链接 <span class="fhelp">（可选，如 PDF 文件的地址）</span></label>
+              <input type="url" id="attachInput" placeholder="如：articles/wen-zhang.pdf 或 https://example.com/articles/wen-zhang.pdf" maxlength="500" inputmode="url" />
+              <span class="fhelp">先把附件文件放到网站根目录的 articles 文件夹里，再填它的地址；填了之后，文章卡片和全文里会显示「查看附件」，点开就能看这个文件。</span>
+            </div>
+            <div class="field full">
+              <span class="flabel">上载文件（可选）</span>
+              <div class="upload-row">
+                <label class="file-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  选择文件
+                  <input type="file" id="fileInput" accept=".txt,.md,.docx,text/plain" />
+                </label>
+                <span class="file-name" id="fileName">尚未选择文件</span>
+              </div>
+            </div>
+            <div class="field full">
+              <label for="bodyInput">正文 <span class="fhelp">（可不填；正文和附件链接至少填一个，只填附件链接也能投稿）</span></label>
+              <textarea id="bodyInput" placeholder="在此输入或粘贴正文。段落之间空一行；诗文可一行一句，发表后按原样排版。"></textarea>
+            </div>
+          </div>
+          <div class="form-foot">
+            <span class="char-count" id="charCount">正文 0 字</span>
+            <button type="button" class="btn-ghost" id="clearBtn">清空重写</button>
+            <button type="submit" class="btn-primary">提交审核</button>
+          </div>
+          <p class="form-error" id="formError" role="alert"></p>
+        </form>
+      </section>
+
+      <!-- 工具条 -->
+      <div class="toolbar">
+        <div class="search">
+          <input type="text" id="searchInput" placeholder="搜索标题、作者或正文…" aria-label="搜索文章" />
+        </div>
+        <button type="button" class="btn-ghost" id="exportBtn">导出全部稿件（JSON）</button>
+      </div>
+
+      <!-- 双栏目 -->
+      <div class="columns">
+        <section class="column col-research" aria-labelledby="researchTitle">
+          <div class="col-head">
+            <h2 class="serif" id="researchTitle">研究文章</h2>
+            <span class="en">Research</span>
+            <span class="count" id="countResearch">0 篇</span>
+          </div>
+          <div class="col-body" id="listResearch"></div>
+        </section>
+
+        <section class="column col-poetry" aria-labelledby="poetryTitle">
+          <div class="col-head">
+            <h2 class="serif" id="poetryTitle">诗文故事</h2>
+            <span class="en">Poetry &amp; Stories</span>
+            <span class="count" id="countPoetry">0 篇</span>
+          </div>
+          <div class="col-body" id="listPoetry"></div>
+        </section>
+      </div>
+
+      </div><!-- /publicView -->
+
+      <!-- 管理员视图 -->
+      <div id="adminView" hidden>
+
+        <section class="panel" aria-labelledby="pendingTitle">
+          <h2 class="serif" id="pendingTitle">待审核稿件</h2>
+          <p class="hint">读者投来的稿件先到这里，还没显示在栏目里。点「批准发表」后才会刊到对应栏目；要退回可先在「处理意见」里写一句原因再点「退回」。投稿者留了邮箱的，写好处理意见后点「发邮件给投稿者」，会打开你本机的邮件应用，收件人、标题和意见都已填好，核对后点发送即可；没留邮箱的稿件发不了邮件。</p>
+          <div id="pendingList"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="adminFormTitle">
+          <h2 class="serif" id="adminFormTitle">管理员发文</h2>
+          <p class="hint">管理员自己写的文章从这里发，点「直接发表」立即刊到栏目里，不用审核。同样可以上传 .txt、.md、.docx 带入正文；有附件文件（如放在网站根目录 articles 文件夹里的 PDF）的，把地址填到「附件链接」里，文章卡片和全文里会显示「查看附件」；只填附件链接、不写正文也可以发表。</p>
+          <form id="adminForm" novalidate>
+            <div class="grid">
+              <div class="field">
+                <span class="flabel" id="aCatLabel">发到哪个栏目 <span class="req">*</span></span>
+                <div class="seg" role="radiogroup" aria-labelledby="aCatLabel">
+                  <label><input type="radio" name="acategory" value="research" checked /><span>研究文章</span></label>
+                  <label><input type="radio" name="acategory" value="poetry" /><span>诗文故事</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="aAuthorInput">作者 / 署名</label>
+                <input type="text" id="aAuthorInput" placeholder="如：编辑部" maxlength="30" />
+              </div>
+              <div class="field full">
+                <label for="aTitleInput">文章标题 <span class="req">*</span></label>
+                <input type="text" id="aTitleInput" placeholder="如：本支张氏迁徙源流考" maxlength="80" />
+              </div>
+              <div class="field full">
+                <label for="aAttachInput">附件链接 <span class="fhelp">（可选，如 PDF 文件的地址）</span></label>
+                <input type="url" id="aAttachInput" placeholder="如：articles/wen-zhang.pdf 或 https://example.com/articles/wen-zhang.pdf" maxlength="500" inputmode="url" />
+                <span class="fhelp">先把附件文件放到网站根目录的 articles 文件夹里，再填它的地址；填了之后，文章卡片和全文里会显示「查看附件」，点开就能看这个文件。</span>
+              </div>
+              <div class="field full">
+                <span class="flabel">上载文件（可选）</span>
+                <div class="upload-row">
+                  <label class="file-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    选择文件
+                    <input type="file" id="aFileInput" accept=".txt,.md,.docx,text/plain" />
+                  </label>
+                  <span class="file-name" id="aFileName">尚未选择文件</span>
+                </div>
+              </div>
+              <div class="field full">
+                <label for="aBodyInput">正文 <span class="fhelp">（可不填；正文和附件链接至少填一个，只填附件链接也能发表）</span></label>
+                <textarea id="aBodyInput" placeholder="在此输入或粘贴正文。段落之间空一行；诗文可一行一句。"></textarea>
+              </div>
+            </div>
+            <div class="form-foot">
+              <span class="char-count" id="aCharCount">正文 0 字</span>
+              <button type="submit" class="btn-primary">直接发表</button>
+            </div>
+            <p class="form-error" id="aFormError" role="alert"></p>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="publishedTitle">
+          <h2 class="serif" id="publishedTitle">已刊文章管理</h2>
+          <p class="hint">已经显示在栏目里的文章。可以「下架」退回待审核区，也可以直接删除。投稿者留了邮箱的，也可在这里补写处理意见并发邮件告知。</p>
+          <div id="publishedList"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="rejectedTitle">
+          <h2 class="serif" id="rejectedTitle">已退回稿件</h2>
+          <p class="hint">退回的稿件不会显示在栏目里。改主意了可以重新批准发表，也可以删除。投稿者留了邮箱的，点「发邮件给投稿者」可把退回原因发过去。</p>
+          <div id="rejectedList"></div>
+        </section>
+
+      </div><!-- /adminView -->
+
+    </div>
+
+    <!-- 阅读浮层 -->
+    <div class="reader-back" id="readerBack">
+      <article class="reader" id="readerBox" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+        <div class="r-cat serif" id="readerCat">研究文章</div>
+        <h2 class="serif" id="readerTitle"></h2>
+        <div class="r-meta" id="readerMeta"></div>
+        <div class="r-body serif" id="readerBody"></div>
+        <div class="r-attach" id="readerAttach" hidden>
+          <span class="a-label">附件</span>
+          <span class="a-url" id="readerAttachUrl"></span>
+          <a class="btn-attach" id="readerAttachLink" href="#" target="_blank" rel="noopener">查看附件</a>
+        </div>
+        <div class="r-foot">
+          <button type="button" class="btn-ghost" id="readerDownload">下载本文（.txt）</button>
+          <button type="button" class="btn-primary" id="readerClose">关闭</button>
+        </div>
+      </article>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var CAT_NAME = { research: "研究文章", poetry: "诗文故事" };
+        var nextId = 1;
+
+        function makeArticle(category, title, author, body, dateText, sample, status, email, attachment) {
+          return {
+            id: nextId++,
+            category: category,
+            title: title,
+            author: author || "佚名",
+            email: email || "",
+            attachment: attachment || "",
+            body: body,
+            date: dateText,
+            sample: !!sample,
+            status: status || "published",
+            reason: "",
+            opinion: ""
+          };
+        }
+
+        /* 附件链接：可以是完整的 http(s) 地址，也可以是 articles/xxx.pdf 这样的站内相对地址 */
+        function isValidAttachment(url) {
+          if (!url) return true;
+          if (/\s/.test(url)) return false;
+          if (/^(javascript|data|vbscript):/i.test(url)) return false;
+          if (/^https?:\/\/\S+$/i.test(url)) return true;
+          if (/^[a-zA-Z0-9._~\/-]+(\?\S*)?$/.test(url) && url.indexOf("..") === -1) return true;
+          return false;
+        }
+
+        function attachBtnHtml(a) {
+          if (!a.attachment) return "";
+          return '<a class="btn-attach" href="' + esc(a.attachment) + '" target="_blank" rel="noopener">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>' +
+            "查看附件</a>";
+        }
+
+        function todayText() {
+          var d = new Date();
+          return d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日";
+        }
+
+        /* 模板自带的示例稿，标有「示例」，可直接删除 */
+        var articles = [
+          makeArticle("research",
+            "示例：本支源流考略",
+            "示例作者",
+            "本支始迁祖于清乾隆年间自邻县迁入，初居河东岸，以耕读为业。旧谱残页记其名讳与葬地，惜世系自三世以下多有脱漏。\n\n考证之法，一在墓碑铭文，二在契约文书，三在邻族谱牒互证。三者相参，方可补旧谱之阙。此文即以三处碑刻、两纸分家契约为据，试述本支前五世之世次，阙疑处一一注明，留待后人续考。",
+            "2026年11月20日", true),
+          makeArticle("poetry",
+            "示例：冬日回乡",
+            "示例作者",
+            "离乡三十载，归来雪满村。\n老屋檐犹在，炊烟认旧痕。\n\n母亲留下的那棵枣树还在墙角，枝桠比记忆里低了许多。族叔拄着拐杖从祠堂那边慢慢走过来，喊的是我小时候的名字。这一声，把半生的路都喊短了。",
+            "2026年11月18日", true)
+        ];
+
+        var els = {
+          form: document.getElementById("postForm"),
+          title: document.getElementById("titleInput"),
+          author: document.getElementById("authorInput"),
+          email: document.getElementById("emailInput"),
+          attach: document.getElementById("attachInput"),
+          body: document.getElementById("bodyInput"),
+          file: document.getElementById("fileInput"),
+          fileName: document.getElementById("fileName"),
+          charCount: document.getElementById("charCount"),
+          error: document.getElementById("formError"),
+          search: document.getElementById("searchInput"),
+          listResearch: document.getElementById("listResearch"),
+          listPoetry: document.getElementById("listPoetry"),
+          countResearch: document.getElementById("countResearch"),
+          countPoetry: document.getElementById("countPoetry"),
+          tallyTotal: document.getElementById("tallyTotal"),
+          tallyResearch: document.getElementById("tallyResearch"),
+          tallyPoetry: document.getElementById("tallyPoetry"),
+          tallyPending: document.getElementById("tallyPending"),
+          tabPublic: document.getElementById("tabPublic"),
+          tabAdmin: document.getElementById("tabAdmin"),
+          pendingBadge: document.getElementById("pendingBadge"),
+          publicView: document.getElementById("publicView"),
+          adminView: document.getElementById("adminView"),
+          pendingList: document.getElementById("pendingList"),
+          publishedList: document.getElementById("publishedList"),
+          rejectedList: document.getElementById("rejectedList"),
+          aForm: document.getElementById("adminForm"),
+          aTitle: document.getElementById("aTitleInput"),
+          aAuthor: document.getElementById("aAuthorInput"),
+          aAttach: document.getElementById("aAttachInput"),
+          aBody: document.getElementById("aBodyInput"),
+          aFile: document.getElementById("aFileInput"),
+          aFileName: document.getElementById("aFileName"),
+          aCharCount: document.getElementById("aCharCount"),
+          aError: document.getElementById("aFormError"),
+          readerBack: document.getElementById("readerBack"),
+          readerBox: document.getElementById("readerBox"),
+          readerCat: document.getElementById("readerCat"),
+          readerTitle: document.getElementById("readerTitle"),
+          readerMeta: document.getElementById("readerMeta"),
+          readerBody: document.getElementById("readerBody"),
+          readerAttach: document.getElementById("readerAttach"),
+          readerAttachUrl: document.getElementById("readerAttachUrl"),
+          readerAttachLink: document.getElementById("readerAttachLink"),
+          readerDownload: document.getElementById("readerDownload"),
+          toast: document.getElementById("toast")
+        };
+
+        var readingId = null;
+        var toastTimer = null;
+
+        function toast(msg) {
+          els.toast.textContent = msg;
+          els.toast.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { els.toast.classList.remove("show"); }, 2600);
+        }
+
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+
+        function excerptOf(a) {
+          var t = a.body.replace(/\s+/g, " ").trim();
+          if (!t) return a.attachment ? "（只有附件，点「查看附件」阅读）" : "";
+          return t.length > 110 ? t.slice(0, 110) + "…" : t;
+        }
+
+        function wordCount(body) {
+          return body.replace(/\s/g, "").length;
+        }
+
+        function wordLabel(a) {
+          var n = wordCount(a.body);
+          return n > 0 ? "全文 " + n + " 字" : "附件";
+        }
+
+        function bodyToHtml(body) {
+          var blocks = body.replace(/\r\n/g, "\n").split(/\n\s*\n/);
+          return blocks.map(function (b) {
+            var lines = b.split("\n").map(function (l) { return esc(l); }).join("<br>");
+            return "<p>" + lines + "</p>";
+          }).join("");
+        }
+
+        function matches(a, q) {
+          if (!q) return true;
+          return (a.title + " " + a.author + " " + a.body).indexOf(q) !== -1;
+        }
+
+        function cardHtml(a) {
+          return '<article class="card" data-id="' + a.id + '">' +
+            '<h3 class="serif"><a data-act="read" tabindex="0" role="button">' + esc(a.title) + "</a></h3>" +
+            '<div class="meta"><span>' + esc(a.author) + "</span><span>" + esc(a.date) + "</span>" +
+            "<span>" + wordLabel(a) + "</span>" +
+            (a.sample ? '<span class="tag-sample">示例</span>' : "") + "</div>" +
+            '<p class="excerpt">' + esc(excerptOf(a)) + "</p>" +
+            '<div class="card-actions">' +
+            '<button type="button" class="btn-read" data-act="read">阅读全文</button>' +
+            attachBtnHtml(a) +
+            '<button type="button" class="btn-mini" data-act="download">下载 .txt</button>' +
+            '<button type="button" class="btn-mini danger" data-act="remove">删除</button>' +
+            "</div></article>";
+        }
+
+        function renderColumn(listEl, countEl, cat, q) {
+          var items = articles.filter(function (a) { return a.category === cat && a.status === "published"; });
+          countEl.textContent = items.length + " 篇";
+          var shown = items.filter(function (a) { return matches(a, q); });
+          if (!items.length) {
+            listEl.innerHTML = '<div class="empty"><span class="big serif">空</span>本栏目还没有文章<br>在上方投稿，经管理员批准后刊在这里。</div>';
+          } else if (!shown.length) {
+            listEl.innerHTML = '<div class="empty">没有找到与「' + esc(q) + "」相关的文章。</div>";
+          } else {
+            listEl.innerHTML = shown.map(cardHtml).join("");
+          }
+        }
+
+        /* ---------- 管理员列表 ---------- */
+        function adminItemHtml(a, kind) {
+          var tag = kind === "pending"
+            ? '<span class="tag-status">待审核</span>'
+            : kind === "rejected"
+              ? '<span class="tag-status rej">已退回</span>'
+              : '<span class="tag-status pub">已刊载</span>';
+          var mailBtn = a.email
+            ? '<button type="button" class="btn-mini" data-aact="mail">发邮件给投稿者</button>'
+            : "";
+          var attachBtn = attachBtnHtml(a);
+          var actions = "";
+          if (kind === "pending") {
+            actions =
+              '<button type="button" class="btn-read" data-aact="approve">批准发表</button>' +
+              '<button type="button" class="btn-mini" data-aact="read">阅读全文</button>' + mailBtn +
+              '<button type="button" class="btn-mini danger" data-aact="reject">退回</button>' +
+              '<button type="button" class="btn-mini danger" data-aact="remove">删除</button>';
+          } else if (kind === "published") {
+            actions =
+              '<button type="button" class="btn-mini" data-aact="read">阅读全文</button>' + mailBtn +
+              '<button type="button" class="btn-mini" data-aact="unpublish">下架</button>' +
+              '<button type="button" class="btn-mini danger" data-aact="remove">删除</button>';
+          } else {
+            actions =
+              '<button type="button" class="btn-read" data-aact="approve">重新批准</button>' +
+              '<button type="button" class="btn-mini" data-aact="read">阅读全文</button>' + mailBtn +
+              '<button type="button" class="btn-mini danger" data-aact="remove">删除</button>';
+          }
+          var mailMeta = a.email
+            ? '<span>邮箱：<a class="mail-link" href="mailto:' + esc(a.email) + '">' + esc(a.email) + "</a></span>"
+            : '<span class="no-mail">未留邮箱</span>';
+          var html = '<article class="admin-item" data-id="' + a.id + '">' +
+            '<h3 class="serif"><a data-aact="read" tabindex="0" role="button">' + esc(a.title) + "</a></h3>" +
+            '<div class="meta"><span>' + esc(CAT_NAME[a.category]) + "</span><span>" + esc(a.author) + "</span><span>" + esc(a.date) + "</span>" +
+            "<span>" + wordLabel(a) + "</span>" + tag +
+            (a.sample ? '<span class="tag-sample">示例</span>' : "") + "</div>" +
+            '<div class="meta">' + mailMeta + "</div>";
+          if (kind === "rejected" && a.reason) {
+            html += '<p class="reject-note">退回原因：' + esc(a.reason) + "</p>";
+          }
+          if (a.opinion && kind !== "pending") {
+            html += '<p class="reject-note" style="color:var(--ink-soft)">已记处理意见：' + esc(a.opinion) + "</p>";
+          }
+          if (a.attachment) {
+            html += '<div class="meta"><span>附件：<a class="mail-link" href="' + esc(a.attachment) + '" target="_blank" rel="noopener">' + esc(a.attachment) + "</a></span></div>";
+          }
+          html += '<p class="excerpt">' + esc(excerptOf(a)) + "</p>" +
+            '<div class="card-actions">' + actions + attachBtn + "</div>";
+          var opinionVal = kind === "rejected" ? (a.reason || a.opinion || "") : (a.opinion || "");
+          html += '<div class="reason-row"><input type="text" class="reject-reason opinion-input" placeholder="处理意见：如 已采用，谢谢投稿／请修改后再投（退回时即为退回原因）" maxlength="200" aria-label="处理意见" value="' + esc(opinionVal) + '"></div>';
+          if (!a.email) {
+            html += '<p class="no-mail" style="margin:6px 0 0">这位投稿者没有留邮箱，处理意见无法用邮件发送。</p>';
+          }
+          return html + "</article>";
+        }
+
+        function renderAdminList(listEl, status, emptyText) {
+          var items = articles.filter(function (a) { return a.status === status; });
+          if (!items.length) {
+            listEl.innerHTML = '<div class="admin-empty">' + emptyText + "</div>";
+          } else {
+            listEl.innerHTML = items.map(function (a) { return adminItemHtml(a, status); }).join("");
+          }
+        }
+
+        function render() {
+          var q = els.search.value.trim();
+          renderColumn(els.listResearch, els.countResearch, "research", q);
+          renderColumn(els.listPoetry, els.countPoetry, "poetry", q);
+          var pub = articles.filter(function (a) { return a.status === "published"; });
+          var r = pub.filter(function (a) { return a.category === "research"; }).length;
+          var pend = articles.filter(function (a) { return a.status === "pending"; }).length;
+          els.tallyTotal.textContent = pub.length;
+          els.tallyResearch.textContent = r;
+          els.tallyPoetry.textContent = pub.length - r;
+          els.tallyPending.textContent = pend;
+          els.pendingBadge.textContent = pend;
+          els.pendingBadge.hidden = pend === 0;
+          renderAdminList(els.pendingList, "pending", "暂时没有待审核的稿件。");
+          renderAdminList(els.publishedList, "published", "还没有已刊载的文章。");
+          renderAdminList(els.rejectedList, "rejected", "没有被退回的稿件。");
+        }
+
+        /* ---------- 视图切换 ---------- */
+        function showView(admin) {
+          els.publicView.hidden = admin;
+          els.adminView.hidden = !admin;
+          els.tabPublic.classList.toggle("active", !admin);
+          els.tabAdmin.classList.toggle("active", admin);
+          window.scrollTo(0, 0);
+        }
+        els.tabPublic.addEventListener("click", function () { showView(false); });
+        els.tabAdmin.addEventListener("click", function () { showView(true); });
+
+        function findById(id) {
+          for (var i = 0; i < articles.length; i++) if (articles[i].id === id) return articles[i];
+          return null;
+        }
+
+        function download(name, text, type) {
+          var blob = new Blob([text], { type: type || "text/plain;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url; a.download = name;
+          document.body.appendChild(a); a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 800);
+        }
+
+        function downloadArticle(a) {
+          var head = a.title + "\n" + CAT_NAME[a.category] + " · " + a.author + " · " + a.date;
+          if (a.attachment) head += "\n附件：" + a.attachment;
+          download(a.title + ".txt", head + "\n\n" + a.body);
+        }
+
+        /* ---------- 阅读 ---------- */
+        function openReader(a) {
+          readingId = a.id;
+          els.readerBox.className = "reader" + (a.category === "research" ? " research" : "");
+          els.readerCat.textContent = CAT_NAME[a.category];
+          els.readerTitle.textContent = a.title;
+          els.readerMeta.textContent = a.author + " · " + a.date + (wordCount(a.body) > 0 ? " · 全文 " + wordCount(a.body) + " 字" : "");
+          els.readerBody.innerHTML = a.body.trim()
+            ? bodyToHtml(a.body)
+            : "<p>（本条只有附件，见下方「查看附件」。）</p>";
+          if (a.attachment) {
+            els.readerAttach.hidden = false;
+            els.readerAttachUrl.textContent = a.attachment;
+            els.readerAttachLink.href = a.attachment;
+          } else {
+            els.readerAttach.hidden = true;
+            els.readerAttachUrl.textContent = "";
+            els.readerAttachLink.removeAttribute("href");
+          }
+          els.readerBack.classList.add("open");
+          els.readerBack.scrollTop = 0;
+          document.body.style.overflow = "hidden";
+        }
+        function closeReader() {
+          els.readerBack.classList.remove("open");
+          document.body.style.overflow = "";
+          readingId = null;
+        }
+        document.getElementById("readerClose").addEventListener("click", closeReader);
+        els.readerBack.addEventListener("click", function (e) { if (e.target === els.readerBack) closeReader(); });
+        document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeReader(); });
+        els.readerDownload.addEventListener("click", function () {
+          var a = findById(readingId);
+          if (a) downloadArticle(a);
+        });
+
+        /* ---------- 栏目内操作（事件委托） ---------- */
+        function onListAction(e) {
+          var btn = e.target.closest("[data-act]");
+          if (!btn) return;
+          var card = e.target.closest("[data-id]");
+          if (!card) return;
+          var a = findById(Number(card.getAttribute("data-id")));
+          if (!a) return;
+          var act = btn.getAttribute("data-act");
+          if (act === "read") openReader(a);
+          else if (act === "download") downloadArticle(a);
+          else if (act === "remove") {
+            articles = articles.filter(function (x) { return x.id !== a.id; });
+            render();
+            toast("已删除《" + a.title + "》");
+          }
+        }
+        els.listResearch.addEventListener("click", onListAction);
+        els.listPoetry.addEventListener("click", onListAction);
+
+        /* ---------- 发邮件给投稿者（打开本机邮件应用） ---------- */
+        function sendMailToAuthor(a, opinion) {
+          if (!a.email) { toast("这位投稿者没有留邮箱，无法发送邮件"); return; }
+          var STATUS_NAME = { published: "已批准发表", pending: "正在审核中", rejected: "已退回" };
+          var subject = "投稿处理意见：《" + a.title + "》";
+          var lines = [
+            a.author + " 您好：",
+            "",
+            "您投到「" + CAT_NAME[a.category] + "」栏目的文章《" + a.title + "》（" + a.date + "投稿）处理结果如下：",
+            "状态：" + (STATUS_NAME[a.status] || a.status)
+          ];
+          if (opinion) lines.push("处理意见：" + opinion);
+          if (a.status === "rejected" && a.reason && a.reason !== opinion) lines.push("退回原因：" + a.reason);
+          lines.push("", "谢谢您的投稿。");
+          var href = "mailto:" + a.email +
+            "?subject=" + encodeURIComponent(subject) +
+            "&body=" + encodeURIComponent(lines.join("\n"));
+          var link = document.createElement("a");
+          link.href = href;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          toast("已打开邮件应用，收件人是 " + a.email + "，核对后点发送即可");
+        }
+
+        /* ---------- 管理员操作（事件委托） ---------- */
+        function onAdminAction(e) {
+          var btn = e.target.closest("[data-aact]");
+          if (!btn) return;
+          var item = e.target.closest("[data-id]");
+          if (!item) return;
+          var a = findById(Number(item.getAttribute("data-id")));
+          if (!a) return;
+          var act = btn.getAttribute("data-aact");
+          if (act === "read") { openReader(a); return; }
+          var opinionInput = item.querySelector(".opinion-input");
+          var opinionVal = opinionInput ? opinionInput.value.trim() : "";
+          if (act === "mail") {
+            if (opinionVal) a.opinion = opinionVal;
+            if (a.status === "rejected" && opinionVal) a.reason = opinionVal;
+            sendMailToAuthor(a, opinionVal || a.opinion || a.reason || "");
+            render();
+            return;
+          }
+          if (act === "approve") {
+            a.status = "published";
+            a.reason = "";
+            if (opinionVal) a.opinion = opinionVal;
+            render();
+            toast(a.email
+              ? "《" + a.title + "》已批准，刊到「" + CAT_NAME[a.category] + "」栏目；点「发邮件给投稿者」可通知投稿者"
+              : "《" + a.title + "》已批准，刊到「" + CAT_NAME[a.category] + "」栏目");
+          } else if (act === "reject") {
+            a.reason = opinionVal;
+            if (opinionVal) a.opinion = opinionVal;
+            a.status = "rejected";
+            render();
+            toast(a.email
+              ? "《" + a.title + "》已退回；点「发邮件给投稿者」可把原因发到投稿者邮箱"
+              : "《" + a.title + "》已退回");
+          } else if (act === "unpublish") {
+            a.status = "pending";
+            render();
+            toast("《" + a.title + "》已下架，回到待审核区");
+          } else if (act === "remove") {
+            articles = articles.filter(function (x) { return x.id !== a.id; });
+            render();
+            toast("已删除《" + a.title + "》");
+          }
+        }
+        els.adminView.addEventListener("click", onAdminAction);
+        els.adminView.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" && e.target.getAttribute("data-aact") === "read") onAdminAction(e);
+        });
+        [els.listResearch, els.listPoetry].forEach(function (list) {
+          list.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" && e.target.getAttribute("data-act") === "read") onListAction(e);
+          });
+        });
+
+        /* ---------- 投稿 ---------- */
+        function showError(msg) {
+          els.error.textContent = msg;
+          els.error.classList.add("show");
+        }
+        function clearError() { els.error.classList.remove("show"); }
+
+        function updateCount() {
+          els.charCount.textContent = "正文 " + wordCount(els.body.value) + " 字";
+        }
+        els.body.addEventListener("input", updateCount);
+
+        els.form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          clearError();
+          var cat = els.form.querySelector('input[name="category"]:checked').value;
+          var title = els.title.value.trim();
+          var author = els.author.value.trim();
+          var email = els.email.value.trim();
+          var attachment = els.attach.value.trim();
+          var body = els.body.value.replace(/\r\n/g, "\n").trim();
+          if (!title) { showError("请先填写文章标题。"); els.title.focus(); return; }
+          if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError("邮箱格式好像不对，请检查一下；不想留也可以清空这一栏。"); els.email.focus(); return; }
+          if (!isValidAttachment(attachment)) { showError("附件链接好像不对：请填完整的 http(s) 地址，或 articles/文件名.pdf 这样的站内地址，不要带空格。"); els.attach.focus(); return; }
+          if (!body && !attachment) { showError("正文和附件链接至少要填一个：请写正文（打字、粘贴或上传文件带入），或在上方填一个附件链接。"); els.body.focus(); return; }
+          var a = makeArticle(cat, title, author, body, todayText(), false, "pending", email, attachment);
+          articles.unshift(a);
+          render();
+          els.title.value = "";
+          els.email.value = "";
+          els.attach.value = "";
+          els.body.value = "";
+          els.file.value = "";
+          els.fileName.textContent = "尚未选择文件";
+          updateCount();
+          toast("《" + title + "》已提交，等待管理员审核批准后显示在「" + CAT_NAME[cat] + "」栏目");
+        });
+
+        /* ---------- 管理员发文（直接发表，不经审核） ---------- */
+        function aShowError(msg) {
+          els.aError.textContent = msg;
+          els.aError.classList.add("show");
+        }
+        function aUpdateCount() {
+          els.aCharCount.textContent = "正文 " + wordCount(els.aBody.value) + " 字";
+        }
+        els.aBody.addEventListener("input", aUpdateCount);
+
+        els.aForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          els.aError.classList.remove("show");
+          var cat = els.aForm.querySelector('input[name="acategory"]:checked').value;
+          var title = els.aTitle.value.trim();
+          var author = els.aAuthor.value.trim();
+          var attachment = els.aAttach.value.trim();
+          var body = els.aBody.value.replace(/\r\n/g, "\n").trim();
+          if (!title) { aShowError("请先填写文章标题。"); els.aTitle.focus(); return; }
+          if (!isValidAttachment(attachment)) { aShowError("附件链接好像不对：请填完整的 http(s) 地址，或 articles/文件名.pdf 这样的站内地址，不要带空格。"); els.aAttach.focus(); return; }
+          if (!body && !attachment) { aShowError("正文和附件链接至少要填一个：请写正文（打字、粘贴或上传文件带入），或在上方填一个附件链接。"); els.aBody.focus(); return; }
+          var a = makeArticle(cat, title, author, body, todayText(), false, "published", "", attachment);
+          articles.unshift(a);
+          render();
+          els.aTitle.value = "";
+          els.aAttach.value = "";
+          els.aBody.value = "";
+          els.aFile.value = "";
+          els.aFileName.textContent = "尚未选择文件";
+          aUpdateCount();
+          toast("《" + title + "》已直接发表到「" + CAT_NAME[cat] + "」栏目");
+          els.publishedList.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        document.getElementById("clearBtn").addEventListener("click", function () {
+          els.title.value = ""; els.author.value = ""; if (els.email) els.email.value = ""; if (els.attach) els.attach.value = ""; els.body.value = "";
+          els.file.value = ""; els.fileName.textContent = "尚未选择文件";
+          clearError(); updateCount(); els.title.focus();
+        });
+
+        /* ---------- 文件上载（投稿表单与管理员表单共用） ---------- */
+        function bindFileInput(fileEl, nameEl, titleEl, bodyEl, countFn, doneText) {
+          fileEl.addEventListener("change", function () {
+            var f = fileEl.files && fileEl.files[0];
+            if (!f) return;
+            nameEl.textContent = f.name;
+            var lower = f.name.toLowerCase();
+            if (lower.slice(-5) === ".docx") {
+              if (typeof mammoth === "undefined") {
+                toast("文档解析组件未能加载，请改用 .txt 文件或直接粘贴正文");
+                return;
+              }
+              f.arrayBuffer().then(function (buf) {
+                return mammoth.extractRawText({ arrayBuffer: buf });
+              }).then(function (res) {
+                fillFromFile(f.name, res.value, titleEl, bodyEl, countFn, doneText);
+              }).catch(function () {
+                toast("这个 .docx 文件没能读出文字，请换个文件或直接粘贴正文");
+              });
+            } else {
+              var reader = new FileReader();
+              reader.onload = function () { fillFromFile(f.name, String(reader.result || ""), titleEl, bodyEl, countFn, doneText); };
+              reader.onerror = function () { toast("文件读取失败，请重试或直接粘贴正文"); };
+              reader.readAsText(f, "UTF-8");
+            }
+          });
+        }
+
+        function fillFromFile(name, text, titleEl, bodyEl, countFn, doneText) {
+          text = text.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+          if (!text) { toast("文件里没有读到文字"); return; }
+          if (!titleEl.value.trim()) {
+            var base = name.replace(/\.(txt|md|docx)$/i, "").trim();
+            if (base) titleEl.value = base;
+          }
+          bodyEl.value = text;
+          countFn();
+          toast(doneText);
+        }
+
+        bindFileInput(els.file, els.fileName, els.title, els.body, updateCount,
+          "已把文件内容带入正文框，检查后点「提交审核」");
+        bindFileInput(els.aFile, els.aFileName, els.aTitle, els.aBody, aUpdateCount,
+          "已把文件内容带入正文框，检查后点「直接发表」");
+
+        /* ---------- 搜索与导出 ---------- */
+        els.search.addEventListener("input", render);
+
+        document.getElementById("exportBtn").addEventListener("click", function () {
+          if (!articles.length) { toast("还没有稿件可导出"); return; }
+          var STATUS_NAME = { published: "已刊载", pending: "待审核", rejected: "已退回" };
+          var data = articles.map(function (a) {
+            var row = { 栏目: CAT_NAME[a.category], 标题: a.title, 作者: a.author, 日期: a.date, 状态: STATUS_NAME[a.status] || a.status, 正文: a.body };
+            if (a.attachment) row.附件链接 = a.attachment;
+            if (a.email) row.邮箱 = a.email;
+            if (a.opinion) row.处理意见 = a.opinion;
+            if (a.status === "rejected" && a.reason) row.退回原因 = a.reason;
+            return row;
+          });
+          download("全部稿件.json", JSON.stringify(data, null, 2), "application/json;charset=utf-8");
+          toast("已导出 " + data.length + " 篇稿件");
+        });
+
+        render();
+        updateCount();
+        aUpdateCount();
+      })();
+    </script>
+  </body>
+</html>
